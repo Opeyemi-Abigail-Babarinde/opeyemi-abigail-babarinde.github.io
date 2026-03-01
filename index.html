@@ -887,8 +887,23 @@
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
     }, { threshold: 0.07 });
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    
+  // Section Nav
+    const sections = ['hero','summary','profile','skills','credentials','case-studies','tools','testimonials','contact'];
+const dots = document.querySelectorAll('.sp-dot');
 
-        }
+dots.forEach(dot => {
+  dot.addEventListener('click', () => {
+    document.getElementById(dot.dataset.target).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+const dotObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      dots.forEach(d => d.classList.remove('active'));
+      const match = document.querySelector(`.sp-dot[data-target="${e.target.id}"]`);
+      if (match) match.classList.add('active');    }
       });
     }, { threshold: 0.4 });
     sections.forEach(id => { const el = document.getElementById(id); if (el) dotObs.observe(el); });
