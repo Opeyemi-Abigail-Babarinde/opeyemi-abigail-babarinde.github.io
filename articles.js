@@ -55,11 +55,11 @@ function renderArticles(list) {
 ];
 
 sorted.forEach(article => {
-
+const el = document.createElement('article'); 
     let classes = 'article-card reveal';
     if (article.featured) classes += ' featured';
     if (article.comingSoon) classes += ' coming-soon';
-
+  
     el.className = classes;
     el.setAttribute('data-category', article.category);
 
@@ -114,7 +114,7 @@ sorted.forEach(article => {
   document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 }
 renderArticles(articles);
-visibleCountEl.textContent = articles.length;
+visibleCountEl.textContent = articles.filter(a => !a.comingSoon).length;
 
 filterBtns.forEach(btn => {
   const filter = btn.getAttribute('data-filter');
