@@ -260,30 +260,8 @@
           </div>
         </div>
       </article>
-
-      <article class="article-card coming-soon reveal" data-category="career-growth" style="transition-delay:0.15s">
-        <div class="article-card-body" style="padding:2rem;">
-          <span class="coming-badge">Coming soon</span>
-          <h2 class="article-title">From Coordinator to Senior PM: What Actually Changes</h2>
-          <p class="article-excerpt">The jump to Senior isn't just about doing more work — it's about shifting from execution to ownership. Here's what that really means day-to-day.</p>
-          <div class="article-footer">
-            <span class="article-tag" style="margin:0;">📈 Career & Growth</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="article-card coming-soon reveal" data-category="process-tools" style="transition-delay:0.2s">
-        <div class="article-card-body" style="padding:2rem;">
-          <span class="coming-badge">Coming soon</span>
-          <h2 class="article-title">How I Built a Client Portal That Cut Email Back-and-Forth by Half</h2>
-          <p class="article-excerpt">A practical walkthrough of the Notion-based client portal system I built, why it worked, and how you can replicate it for your own projects.</p>
-          <div class="article-footer">
-            <span class="article-tag" style="margin:0;">⚙️ Process & Tools</span>
-          </div>
-        </div>
-      </article>
-
-    </div>
+<script src="articles.js"></script>
+<div class="articles-grid" id="articlesGrid"></div>
   </main>
 
   <!-- NEWSLETTER / CONNECT -->
@@ -322,6 +300,67 @@ const loadMoreBtn = document.getElementById('loadMoreBtn');
 let activeFilter = 'all';
 let searchQuery = '';
 let visibleLimit = 4; // initial visible articles
+
+    // Article js
+    const grid = document.getElementById('articlesGrid');
+
+function createArticleCard(article) {
+  if (article.comingSoon) {
+    return `
+      <article class="article-card coming-soon reveal" data-category="${article.category}">
+        <div class="article-card-body" style="padding:2rem;">
+          <span class="coming-badge">Coming soon</span>
+          <h2 class="article-title">${article.title}</h2>
+          <p class="article-excerpt">${article.excerpt}</p>
+          <div class="article-footer">
+            <span class="article-tag" style="margin:0;">${article.tag}</span>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  if (article.featured) {
+    return `
+      <article class="article-card featured reveal" data-category="${article.category}">
+        <div class="article-card-visual" style="background: linear-gradient(135deg, #1a1228, #2d1f4e);"></div>
+        <div class="article-card-body">
+          <span class="article-tag">${article.tag}</span>
+          <h2 class="article-title">${article.title}</h2>
+          <p class="article-excerpt">${article.excerpt}</p>
+          <div class="article-footer">
+            <div>
+              <div class="article-date">${article.date}</div>
+              <div class="article-read-time">${article.readTime}</div>
+            </div>
+            <a href="${article.link}" class="article-read-link">Read article →</a>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  return `
+    <article class="article-card reveal" data-category="${article.category}">
+      <div class="article-card-body">
+        <span class="article-tag">${article.tag}</span>
+        <h2 class="article-title">${article.title}</h2>
+        <p class="article-excerpt">${article.excerpt}</p>
+        <div class="article-footer">
+          <div>
+            <div class="article-date">${article.date}</div>
+            <div class="article-read-time">${article.readTime}</div>
+          </div>
+          <a href="${article.link}" class="article-read-link">Read article →</a>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderArticles(list) {
+  grid.innerHTML = list.map(createArticleCard).join('');
+}
 
 // Add count badges
 filterBtns.forEach(btn => {
@@ -372,25 +411,31 @@ function updateArticles() {
   }
 
   // Empty state
-  if (filtered.length === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'no-results';
+ // Empty state
+      if (visible === 0) {
+        var empty = document.createElement('div');
+        empty.className = 'no-results';
+        var icon = document.createElement('div');
+        icon.className = 'no-results-icon';
+        icon.textContent = 'Nothing here yet';
+        var title = document.createElement('div');
+        title.className = 'no-results-title';
+        title.textContent = 'No articles in this category yet';
+        var desc = document.createElement('div');
+        desc.className = 'no-results-desc';
+        desc.textContent = 'I am working on it — check back soon, or browse all articles.';
+        empty.appendChild(icon);
+        empty.appendChild(title);
+        empty.appendChild(desc);
+        grid.appendChild(empty);
+      }
 
-    empty.innerHTML = `
-      <div class="no-results-icon">Nothing here yet</div>
-      <div class="no-results-title">No matching articles</div>
-      <div class="no-results-desc">Try a different keyword or filter.</div>
-    `;
-
-    grid.appendChild(empty);
-  }
-
-  // Re-trigger reveal animation
-  document.querySelectorAll('.article-card:not(.hidden)').forEach(el => {
-    el.classList.remove('visible');
-    revealObs.observe(el);
-  });
-}
+      // Re-trigger reveal animations on now-visible cards
+      [].forEach.call(grid.querySelectorAll('.article-card:not(.hidden)'), function(el) {
+        el.classList.remove('visible');
+        revealObs.observe(el);
+      });
+    }
 
 // FILTER CLICK
 filterBtns.forEach(btn => {
