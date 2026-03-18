@@ -36,9 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
     comingSoon: true
   }
 ];
-  ];
+  
 const grid = document.getElementById('articlesGrid');
 const visibleCountEl = document.getElementById('visibleCount');
+console.log("GRID:", grid);
+console.log("COUNT:", visibleCountEl);
+console.log("ARTICLES:", articles.length);
 const filterBtns = document.querySelectorAll('[data-filter]');
 const revealObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
