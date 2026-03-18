@@ -1,5 +1,7 @@
-const articles = [
-  {
+document.addEventListener('DOMContentLoaded', () => {
+
+  const articles = [
+    {
     title: "How Better Documentation Reduces Project Rework in Agile Teams",
     category: "agile-delivery",
     tag: "🔄 Agile & Delivery",
@@ -34,7 +36,7 @@ const articles = [
     comingSoon: true
   }
 ];
-
+  ];
 const grid = document.getElementById('articlesGrid');
 const visibleCountEl = document.getElementById('visibleCount');
 const filterBtns = document.querySelectorAll('[data-filter]');
@@ -161,5 +163,7 @@ filterBtns.forEach(btn => {
     btn.classList.add('active');
 
     filterArticles(btn.getAttribute('data-filter'));
+    });
   });
+
 });
