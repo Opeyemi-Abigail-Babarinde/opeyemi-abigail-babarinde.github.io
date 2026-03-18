@@ -57,6 +57,12 @@
 
     /* FILTERS */
     .filters-bar { background: var(--white); border-bottom: 1px solid rgba(196,181,244,0.15); padding: 1rem 5vw; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    <input 
+  type="text" 
+  id="searchInput" 
+  placeholder="Search articles..." 
+  style="margin-left:auto; padding:0.5rem 0.9rem; border-radius:6px; border:1px solid rgba(196,181,244,0.3); font-size:0.75rem; width:200px;"
+/>
     .filter-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-right: 0.5rem; }
     .filter-btn { font-size: 0.75rem; font-weight: 600; padding: 0.4rem 1rem; border-radius: 100px; border: 1px solid rgba(196,181,244,0.3); background: transparent; color: var(--ink-muted); cursor: pointer; transition: all 0.2s; font-family: var(--sans); }
     .filter-btn:hover, .filter-btn.active { background: var(--lilac-soft); border-color: var(--lilac-mid); color: var(--lilac-deep); }
@@ -144,6 +150,9 @@
 
   /* Make grid single column */
   .articles-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  <div style="text-align:center; margin-top:2rem;">
+  <button id="loadMoreBtn" class="filter-btn">Load more</button>
+</div>
 
   /* Stack featured card */
   .article-card.featured { grid-template-columns: 1fr; }
@@ -304,77 +313,114 @@
 
     // ── WORKING FILTERS ──
     const filterBtns = document.querySelectorAll('[data-filter]');
-    const articleCards = document.querySelectorAll('.articles-grid .article-card');
-    const visibleCountEl = document.getElementById('visibleCount');
-    const grid = document.getElementById('articlesGrid');
+const articleCards = Array.from(document.querySelectorAll('.articles-grid .article-card'));
+const visibleCountEl = document.getElementById('visibleCount');
+const grid = document.getElementById('articlesGrid');
+const searchInput = document.getElementById('searchInput');
+const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-    // Add count badges to each filter button on load
-    filterBtns.forEach(function(btn) {
-      var filter = btn.getAttribute('data-filter');
-      var count = filter === 'all'
-        ? articleCards.length
-        : [].filter.call(articleCards, function(c) { return c.getAttribute('data-category') === filter; }).length;
-      var badge = document.createElement('span');
-      badge.className = 'filter-count';
-      badge.textContent = count;
-      btn.appendChild(badge);
-    });
+let activeFilter = 'all';
+let searchQuery = '';
+let visibleLimit = 4; // initial visible articles
 
-    function filterArticles(activeFilter) {
-      // Remove any existing empty state
-      var existing = grid.querySelector('.no-results');
-      if (existing) existing.remove();
+// Add count badges
+filterBtns.forEach(btn => {
+  const filter = btn.getAttribute('data-filter');
+  const count = filter === 'all'
+    ? articleCards.length
+    : articleCards.filter(c => c.getAttribute('data-category') === filter).length;
 
-      var visible = 0;
-      articleCards.forEach(function(card) {
-        var cat = card.getAttribute('data-category');
-        var show = activeFilter === 'all' || cat === activeFilter;
-        if (show) {
-          card.classList.remove('hidden');
-          visible++;
-        } else {
-          card.classList.add('hidden');
-        }
-      });
+  const badge = document.createElement('span');
+  badge.className = 'filter-count';
+  badge.textContent = count;
+  btn.appendChild(badge);
+});
 
-      // Update count text
-      visibleCountEl.textContent = visible;
+function updateArticles() {
+  let visible = 0;
 
-      // Empty state
-      if (visible === 0) {
-        var empty = document.createElement('div');
-        empty.className = 'no-results';
-        var icon = document.createElement('div');
-        icon.className = 'no-results-icon';
-        icon.textContent = 'Nothing here yet';
-        var title = document.createElement('div');
-        title.className = 'no-results-title';
-        title.textContent = 'No articles in this category yet';
-        var desc = document.createElement('div');
-        desc.className = 'no-results-desc';
-        desc.textContent = 'I am working on it — check back soon, or browse all articles.';
-        empty.appendChild(icon);
-        empty.appendChild(title);
-        empty.appendChild(desc);
-        grid.appendChild(empty);
-      }
+  // Remove empty state if exists
+  const existing = grid.querySelector('.no-results');
+  if (existing) existing.remove();
 
-      // Re-trigger reveal animations on now-visible cards
-      [].forEach.call(grid.querySelectorAll('.article-card:not(.hidden)'), function(el) {
-        el.classList.remove('visible');
-        revealObs.observe(el);
-      });
-    }
+  const filtered = articleCards.filter(card => {
+    const category = card.getAttribute('data-category');
+    const title = card.querySelector('.article-title').textContent.toLowerCase();
+    const excerpt = card.querySelector('.article-excerpt').textContent.toLowerCase();
 
-    filterBtns.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        filterBtns.forEach(function(b) { b.classList.remove('active'); });
-        btn.classList.add('active');
-        filterArticles(btn.getAttribute('data-filter'));
-      });
-    });  
+    const matchesFilter = activeFilter === 'all' || category === activeFilter;
+    const matchesSearch = title.includes(searchQuery) || excerpt.includes(searchQuery);
+
+    return matchesFilter && matchesSearch;
+  });
+
+  // Show only up to visibleLimit
+  articleCards.forEach(card => card.classList.add('hidden'));
+
+  filtered.slice(0, visibleLimit).forEach(card => {
+    card.classList.remove('hidden');
+    visible++;
+  });
+
+  visibleCountEl.textContent = filtered.length;
+
+  // Handle Load More visibility
+  if (filtered.length > visibleLimit) {
+    loadMoreBtn.style.display = 'inline-block';
+  } else {
+    loadMoreBtn.style.display = 'none';
+  }
+
+  // Empty state
+  if (filtered.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'no-results';
+
+    empty.innerHTML = `
+      <div class="no-results-icon">Nothing here yet</div>
+      <div class="no-results-title">No matching articles</div>
+      <div class="no-results-desc">Try a different keyword or filter.</div>
+    `;
+
+    grid.appendChild(empty);
+  }
+
+  // Re-trigger reveal animation
+  document.querySelectorAll('.article-card:not(.hidden)').forEach(el => {
+    el.classList.remove('visible');
+    revealObs.observe(el);
+  });
+}
+
+// FILTER CLICK
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    activeFilter = btn.getAttribute('data-filter');
+    visibleLimit = 4; // reset
+    updateArticles();
+  });
+});
+
+// SEARCH INPUT
+searchInput.addEventListener('input', function () {
+  searchQuery = this.value.toLowerCase();
+  visibleLimit = 4; // reset
+  updateArticles();
+});
+
+// LOAD MORE
+loadMoreBtn.addEventListener('click', () => {
+  visibleLimit += 3;
+  updateArticles();
+});
+
+// INITIAL RUN
+updateArticles();
     
-    // Hamburger toggle
+// Hamburger toggle
 const hb = document.getElementById('hb');
 const navLinks = document.getElementById('navLinks');
 const overlay = document.getElementById('navOverlay');
