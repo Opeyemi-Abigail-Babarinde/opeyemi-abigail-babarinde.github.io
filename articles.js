@@ -1,5 +1,3 @@
-console.log("JS LOADED");
-
 document.addEventListener('DOMContentLoaded', () => {
 
   const articles = [
@@ -41,8 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 const grid = document.getElementById('articlesGrid');
 const visibleCountEl = document.getElementById('visibleCount');
-  console.log("GRID", grid)
-console.log(COUNT, visibleCountEl);
 const filterBtns = document.querySelectorAll('[data-filter]');
 const revealObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
