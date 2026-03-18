@@ -411,17 +411,22 @@
         btn.classList.add('active');
         filterArticles(btn.getAttribute('data-filter'));
         shownCount = CARDS_PER_PAGE;
+        renderCards();
       });
     });  
     
     // Search input
     searchInput.addEventListener('input', function() {
       searchTerm = searchInput.value.trim().toLowerCase();
-      shownCount = CARDS_PER_PAGE; }); 
+      shownCount = CARDS_PER_PAGE;  
+      renderCards();
+    }); 
       
     // Load more
     loadMoreBtn.addEventListener('click', function() {
-      shownCount += CARDS_PER_PAGE; }); 
+      shownCount += CARDS_PER_PAGE;
+      renderCards();
+    });
     
     // Hamburger toggle
 const hb = document.getElementById('hb');
