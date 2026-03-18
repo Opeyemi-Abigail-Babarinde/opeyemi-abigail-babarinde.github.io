@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
      category: "career-growth",
      tag: "🤝 Career & Growth",
      excerpt: "The technical side of delivery is learnable...",
-     excerpt: "One of the biggest hidden...",
      date: "April 2026",
      readTime: "5 min read",
      link: "how-better-documentation-reduces-rework.html",
