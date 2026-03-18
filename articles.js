@@ -106,6 +106,22 @@ const el = document.createElement('article');
         </div>
       `;
     }
+  else {
+  el.innerHTML = `
+    <div class="article-card-body">
+      <span class="article-tag">${article.tag}</span>
+      <h2 class="article-title">${article.title}</h2>
+      <p class="article-excerpt">${article.excerpt}</p>
+      <div class="article-footer">
+        <div>
+          <div class="article-date">${article.date || ''}</div>
+          <div class="article-read-time">${article.readTime || ''}</div>
+        </div>
+        <a href="${article.link || '#'}" class="article-read-link">Read article →</a>
+      </div>
+    </div>
+  `;
+}
 
     grid.appendChild(el);
   });
