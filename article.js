@@ -2,24 +2,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
    const articles = [
     {
-    title: "How Better Documentation Reduces Project Rework in Agile Teams",
-    category: "agile-delivery",
-    tag: "🔄 Agile & Delivery",
-    excerpt: "One of the biggest hidden costs in product development is rework...",
-    date: "March 2026",
-    readTime: "7 min read",
-    link: "how-better-documentation-reduces-rework.html",
-    featured: true
-  },
-      {
     title: "How I Built a Notion System for Project Tracking and Team Accountability",
     category: "process-tools",
     tag: "⚙️ Process & Tools",
     excerpt: "A practical walkthrough of the Notion-based client portal system...",
     date: "May 2026",
     readTime: "8 min read",
-    link: "how i-built-a-notion-system-for-project-tracking-and-team-accountability.html",
+    link: "how-i-built-a-notion-system-for-project-tracking-and-team-accountability.html",
     featured: true
+  },
+      {
+     title: "How Better Documentation Reduces Project Rework in Agile Teams",
+    category: "agile-delivery",
+    tag: "🔄 Agile & Delivery",
+    excerpt: "One of the biggest hidden costs in product development is rework...",
+    date: "March 2026",
+    readTime: "7 min read",
+    link: "how-better-documentation-reduces-rework.html",
   },
 
   {
