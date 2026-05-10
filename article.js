@@ -11,6 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     link: "how-better-documentation-reduces-rework.html",
     featured: true
   },
+      {
+    title: "How I Built a Notion System for Project Tracking and Team Accountability",
+    category: "process-tools",
+    tag: "⚙️ Process & Tools",
+    excerpt: "A practical walkthrough of the Notion-based client portal system...",
+    date: "May 2026",
+    readTime: "8 min read",
+    link: "how i-built-a-notion-system-for-project-tracking-and-team-accountability.html",
+    featured: true
+  },
 
   {
     title: "Why Stakeholder Communication Is the Hardest Part of Any Project",
@@ -25,14 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     category: "career-growth",
     tag: "📈 Career & Growth",
     excerpt: "The jump to Senior isn't just about doing more work...",
-    comingSoon: true
-  },
-
-  {
-    title: "How I Built a Client Portal That Cut Email Back-and-Forth by Half",
-    category: "process-tools",
-    tag: "⚙️ Process & Tools",
-    excerpt: "A practical walkthrough of the Notion-based client portal system...",
     comingSoon: true
   }
 ];
